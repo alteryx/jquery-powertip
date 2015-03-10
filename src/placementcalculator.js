@@ -40,6 +40,11 @@ function PlacementCalculator() {
 			position = getHtmlPlacement(element, placementBase, fromCenter);
 		}
 
+		// early exit if position could not be determined
+		if (!position) {
+			return coords;
+		}
+
 		// calculate the appropriate x and y position in the document
 		switch (placement) {
 		case 'n':
@@ -178,8 +183,14 @@ function PlacementCalculator() {
 	 * @return {Object} An object with the top,left position values.
 	 */
 	function getSvgPlacement(element, placement, fromCenter) {
-		var svgElement = element.closest('svg')[0],
-			domElement = element[0],
+		var svgElement = element.closest('svg')[0];
+
+		// Early exit if svgElement was not defined.
+		if (!svgElement) {
+			return null;
+		}
+
+		var domElement = element[0],
 			point = svgElement.createSVGPoint(),
 			boundingBox = domElement.getBBox(),
 			matrix = domElement.getScreenCTM(),
@@ -188,7 +199,7 @@ function PlacementCalculator() {
 			placements = [],
 			placementKeys = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'],
 			coords,
-						center = svgElement.createSVGPoint(),
+			center = svgElement.createSVGPoint(),
 			rotation,
 			steps,
 			x;
